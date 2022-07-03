@@ -37,13 +37,13 @@ class Ball(Block):
         self.speed_x = speed_x * random.choice((1, 1)) #------------------------------------------------------------------------------------------#
         self.speed_y = speed_y * random.choice((-1, 1)) #------------------------------------------------------------------------------------------#
         self.paddles = paddles
-        self.active = False
+        self.active = True
         self.score_time = 0
 
     def update(self):
         if self.active:
             self.rect.x += self.speed_x
-            #self.rect.y += self.speed_y
+            self.rect.y += self.speed_y
             self.collisions()
         else:
             self.restart_counter()
@@ -58,8 +58,10 @@ class Ball(Block):
             collision_paddle = pygame.sprite.spritecollide(self, self.paddles, False)[0].rect
             if abs(self.rect.right - collision_paddle.left) < 10 and self.speed_x > 0:
                 self.speed_x *= -1
+                self.speed_y *= -1
             if abs(self.rect.left - collision_paddle.right) < 10 and self.speed_x < 0:
                 self.speed_x *= -1
+                self.speed_y *= -1
             if abs(self.rect.top - collision_paddle.bottom) < 10 and self.speed_y < 0:
                 self.rect.top = collision_paddle.bottom
                 self.speed_y *= -1
@@ -75,7 +77,7 @@ class Ball(Block):
         self.rect.center = (screen_width / 2, screen_height / 2)
         #sound        pygame.mixer.Sound.play(score_sound)
 
-    def restart_counter(self):
+    def restart_counter(self): #contador 3, 2, 1 en saque de pelota desde el centro (no se esta usando)
         current_time = pygame.time.get_ticks()
         countdown_number = 3
 
@@ -91,8 +93,8 @@ class Ball(Block):
 
         time_counter = basic_font.render(str(countdown_number), True, color1)
         time_counter_rect = time_counter.get_rect(center=(screen_width / 2, screen_height / 2 + 50))
-        pygame.draw.rect(screen, bg_color, time_counter_rect)
-        screen.blit(time_counter, time_counter_rect)
+        #pygame.draw.rect(screen, bg_color, time_counter_rect)
+        #screen.blit(time_counter, time_counter_rect)
 
 
 class Opponent(Block):
@@ -141,24 +143,46 @@ class GameManager:
             self.ball_group.sprite.reset_ball()
 
     def draw_score(self):
-        #player_score = basic_font.render(str(self.player_score), True, color0)
-        #opponent_score = basic_font.render(str(self.opponent_score), True, color0)
 
-        #player_score_rect = player_score.get_rect(midleft=(screen_width / 2 + 40, screen_height / 2))
-        #opponent_score_rect = opponent_score.get_rect(midright=(screen_width / 2 - 40, screen_height / 2))
+        player1_text = pygame.font.SysFont(None, 40)
+        player2_text = pygame.font.SysFont(None, 40)
+        set_text = pygame.font.SysFont(None, 22)
+        game_text = pygame.font.SysFont(None, 22)
+        point_text = pygame.font.SysFont(None, 22)
+        player1_set = pygame.font.SysFont(None, 40)
+        player2_set = pygame.font.SysFont(None, 40)
+        player1_game = pygame.font.SysFont(None, 40)
+        player2_game = pygame.font.SysFont(None, 40)
+        player1_point = pygame.font.SysFont(None, 40)
+        player2_point = pygame.font.SysFont(None, 40)
+        
+        player1_text_img = player1_text.render('Player 1', True, color0)
+        player2_text_img = player2_text.render('Player 2', True, color0)
+        set_text_img = set_text.render('SETS', True, color0)
+        game_text_img = game_text.render('GAMES', True, color0)
+        point_text_img = point_text.render('POINTS', True, color0)
+        player1_set_img = player1_set.render(str(match[1]), True, color0)
+        player2_set_img = player2_set.render(str(match[2]), True, color0)
+        player1_game_img = player1_game.render(str(set[1]), True, color0)
+        player2_game_img = player2_game.render(str(set[2]), True, color0)
+        player1_point_img = player1_point.render(str(game[1]), True, color0)
+        player2_point_img = player2_point.render(str(game[2]), True, color0)
 
-        player_score = basic_font.render(str(game[1]), True, color0) #------------------------------------------------------------------------------------------#
-        opponent_score = basic_font.render(str(game[2]), True, color0) #------------------------------------------------------------------------------------------#
-
-        player_score_rect = player_score.get_rect(midleft=(screen_width / 2 + 40, screen_height / 2))
-        opponent_score_rect = opponent_score.get_rect(midright=(screen_width / 2 - 40, screen_height / 2))
-
-        screen.blit(player_score, player_score_rect)
-        screen.blit(opponent_score, opponent_score_rect)
-
+        screen.blit(player1_text_img, ((screen_width / 3) + 80, (screen_height / 8) + 20))
+        screen.blit(player2_text_img, ((screen_width / 3) + 80, (screen_height / 8) + 60))
+        screen.blit(set_text_img, ((screen_width / 3) + 218, screen_height / 9))
+        screen.blit(game_text_img, ((screen_width / 3) + 280, screen_height / 9))
+        screen.blit(point_text_img, ((screen_width / 3) + 360, screen_height / 9))
+        screen.blit(player1_set_img, ((screen_width / 3) + 230, (screen_height / 8) + 20))
+        screen.blit(player2_set_img, ((screen_width / 3) + 230, (screen_height / 8) + 60))
+        screen.blit(player1_game_img, ((screen_width / 3) + 300, (screen_height / 8) + 20))
+        screen.blit(player2_game_img, ((screen_width / 3) + 300, (screen_height / 8) + 60))
+        screen.blit(player1_point_img, ((screen_width / 3) + 370, (screen_height / 8) + 20))
+        screen.blit(player2_point_img, ((screen_width / 3) + 370, (screen_height / 8) + 60))
 
 def sets_number():
     global sets
+    '''
     while True:
         sets = input('How many sets?\n[3 or 5]')
         if (sets == '3') or (sets == '5'):
@@ -166,6 +190,8 @@ def sets_number():
             break
         else:
             print('3 or 5')
+    '''
+    sets = 3
 
 def f_change(self):
     if self == 1:
@@ -174,7 +200,7 @@ def f_change(self):
         return 1
 
 def print_long(self):
-    print("\nPoint player{}\nPlayer 1 - Player 2\nSet:    {} - {}\nMatch:  {} - {}".format(self, set[1], set[2], match[1], match[2]))
+    print("\nPoint player{}\nPlayer 1 - Player 2\nGames:    {} - {}\nSets:  {} - {}".format(self, set[1], set[2], match[1], match[2]))
 
 def f_game(self):
     if (game[self] == 0) or (game[self] == 15):
@@ -252,7 +278,7 @@ def f_match(self):
             print('{} - {}'.format(matchlist[i * 2], matchlist[i * 2 + 1]))
     else:
         print('\nSet player{}'.format(self))
-        print("\nPlayer 1 - Player 2\nSet:    {} - {}\nMatch:  {} - {}".format(set[1], set[2], match[1], match[2]))
+        print("\nPlayer 1 - Player 2\nGames:    {} - {}\nSets:  {} - {}".format(set[1], set[2], match[1], match[2]))
 
 def f_tiebreak():
     print('\nTie Break')
@@ -322,7 +348,7 @@ paddle_group = pygame.sprite.Group()
 paddle_group.add(player)
 # paddle_group.add(opponent)
 
-ball = Ball('Ball.png', screen_width / 2, screen_height / 2, 22, 4, paddle_group)
+ball = Ball('Ball.png', screen_width / 2, screen_height / 2, 8, 1, paddle_group) #max speed 22?
 ball_sprite = pygame.sprite.GroupSingle()
 ball_sprite.add(ball)
 

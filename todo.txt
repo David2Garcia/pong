@@ -1,0 +1,11 @@
+Add movement left/right to paddle
+Add opponent
+Ball game ability
+Oponent functionality
+Insert real serve
+Connect PS3 joystick
+PS3 joystick integration
+Start/pause menu
+Split code
+Insert end match functionality
+Improve scoreboard
