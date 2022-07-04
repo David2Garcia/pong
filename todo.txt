@@ -1,7 +1,7 @@
-Add movement left/right to paddle
-Add opponent
+Make wider lines
 Ball game ability
 Oponent functionality
+Add acceleration/deceleration
 Insert real serve
 Connect PS3 joystick
 PS3 joystick integration

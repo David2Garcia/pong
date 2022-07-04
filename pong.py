@@ -15,19 +15,26 @@ class Block(pygame.sprite.Sprite):
 
 
 class Player(Block):
-    def __init__(self, path, x_pos, y_pos, speed):
+    def __init__(self, path, x_pos, y_pos, speed_x, speed_y):
         super().__init__(path, x_pos, y_pos)
-        self.speed = speed
-        self.movement = 0
+        self.speed_x = speed_x
+        self.speed_y = speed_y
+        self.movement_x = 0
+        self.movement_y = 0
 
     def screen_constrain(self):
         if self.rect.top <= 0:
             self.rect.top = 0
         if self.rect.bottom >= screen_height:
             self.rect.bottom = screen_height
+        if self.rect.left <= (screen_width/2 + 100):
+            self.rect.left = (screen_width/2 + 100)
+        if self.rect.right >= (screen_width - 5):
+            self.rect.right = (screen_width - 5)
 
     def update(self, ball_group):
-        self.rect.y += self.movement
+        self.rect.x += self.movement_x
+        self.rect.y += self.movement_y
         self.screen_constrain()
 
 
@@ -342,18 +349,17 @@ line11 = pygame.Rect((30.08 / 36.58) * screen_width, screen_height / 2 - screen_
 #court = pygame.Rect(0,30,60,90) # red
 
 # Game objects
-player = Player('Paddle.png', screen_width - 20, screen_height / 2, 5)
+player = Player('Paddle.png', screen_width - 20, screen_height / 2, 5, 5)
 opponent = Opponent('Paddle.png', 20, screen_width / 2, 5)
 paddle_group = pygame.sprite.Group()
 paddle_group.add(player)
-# paddle_group.add(opponent)
+paddle_group.add(opponent)
 
 ball = Ball('Ball.png', screen_width / 2, screen_height / 2, 8, 1, paddle_group) #max speed 22?
 ball_sprite = pygame.sprite.GroupSingle()
 ball_sprite.add(ball)
 
 game_manager = GameManager(ball_sprite, paddle_group)
-
 
 while True:
     for event in pygame.event.get():
@@ -362,14 +368,22 @@ while True:
             sys.exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                player.movement -= player.speed
+                player.movement_y -= player.speed_y
             if event.key == pygame.K_DOWN:
-                player.movement += player.speed
+                player.movement_y += player.speed_y
+            if event.key == pygame.K_LEFT:
+                player.movement_x -= player.speed_x
+            if event.key == pygame.K_RIGHT:
+                player.movement_x += player.speed_x
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_UP:
-                player.movement += player.speed
+                player.movement_y += player.speed_y
             if event.key == pygame.K_DOWN:
-                player.movement -= player.speed
+                player.movement_y -= player.speed_y
+            if event.key == pygame.K_LEFT:
+                player.movement_x += player.speed_x
+            if event.key == pygame.K_RIGHT:
+                player.movement_x -= player.speed_x
 
     # Background Stuff
 
